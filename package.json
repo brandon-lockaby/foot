@@ -1,0 +1,12 @@
+{
+  "name": "auxcore",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "author": "Brandon Lockaby",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "homepage": "https://github.com/brandon-lockaby",
+  "dependencies": {
+    "@types/three": "^0.143.1"
+  }
+}
