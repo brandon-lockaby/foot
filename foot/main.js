@@ -2,7 +2,7 @@
 const USE_SHADOWS = true;
 const FRAMERATE = 30;
 
-import * as THREE from '/lib/three/three.module.js';
+import * as THREE from 'three';
 import { GLTFLoader } from '/lib/three/GLTFLoader.js';
 import { EXRLoader } from '/lib/three/EXRLoader.js';
 import { OrbitControls } from '/lib/three/OrbitControls.js';
