@@ -6,6 +6,8 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "homepage": "https://github.com/brandon-lockaby",
   "scripts": {
+    "debug": "parcel index.html",
+    "build": "parcel build index.html",
     "push": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
   },
   "dependencies": {
