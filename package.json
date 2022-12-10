@@ -5,7 +5,9 @@
   "author": "Brandon Lockaby",
   "license": "SEE LICENSE IN LICENSE.txt",
   "homepage": "https://github.com/brandon-lockaby",
-  "push-gh-pages": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose",
+  "scripts": {
+    "push": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
+  },
   "dependencies": {
     "marked": "^4.2.4",
     "three": "^0.147.0"
@@ -15,7 +17,8 @@
     "buffer": "^5.7.1",
     "cssnano": "^5.1.14",
     "parcel": "latest",
-    "parcel-plugin-static-files-copy": "^2.6.0",
-    "postcss": "^8.4.19"
+    "parcel-plugin-static-files-copy": "latest",
+    "postcss": "^8.4.19",
+    "push-dir": "^0.4.1"
   }
 }
