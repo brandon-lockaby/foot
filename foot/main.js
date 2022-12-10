@@ -21,7 +21,6 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
 console.log('renderer:', renderer);
 const scene = new THREE.Scene();
-scene.add(new THREE.HemisphereLight(0xf0d0d0, 0x101030, 4));
 const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
 const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 5, 12);

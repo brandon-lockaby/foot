@@ -2,7 +2,6 @@
   "name": "auxcore",
   "version": "1.0.0",
   "description": "test",
-  "main": "index.js",
   "author": "Brandon Lockaby",
   "license": "SEE LICENSE IN LICENSE.txt",
   "homepage": "https://github.com/brandon-lockaby",
@@ -13,7 +12,10 @@
   },
   "devDependencies": {
     "@types/three": "^0.143.1",
+    "buffer": "^5.7.1",
+    "cssnano": "^5.1.14",
     "parcel": "latest",
-    "parcel-plugin-static-files-copy": "^2.6.0"
+    "parcel-plugin-static-files-copy": "^2.6.0",
+    "postcss": "^8.4.19"
   }
 }
