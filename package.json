@@ -7,19 +7,16 @@
   "homepage": "https://github.com/brandon-lockaby",
   "scripts": {
     "debug": "parcel index.html",
-    "build": "rimraf dist/* && mkdir dist && cp -r static/* dist/ && parcel build index.html",
+    "build": "rimraf dist && mkdir dist && cp -r static/* dist/ && parcel build index.html",
     "push": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
   },
   "dependencies": {
-    "marked": "^4.2.4",
     "three": "^0.147.0"
   },
   "devDependencies": {
     "@types/three": "^0.143.1",
     "buffer": "^5.7.1",
-    "cssnano": "^5.1.14",
     "parcel": "",
-    "postcss": "^8.4.19",
     "push-dir": "^0.4.1",
     "rimraf": ""
   }
