@@ -7,7 +7,7 @@
   "homepage": "https://github.com/brandon-lockaby",
   "scripts": {
     "debug": "parcel index.html",
-    "build": "rimraf dist && cp -r static/* dist/ && parcel build index.html",
+    "build": "rimraf dist/* && cp -r static/* dist/ && parcel build index.html",
     "push": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
   },
   "dependencies": {
