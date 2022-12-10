@@ -3,9 +3,11 @@ const USE_SHADOWS = true;
 const FRAMERATE = 30;
 
 import * as THREE from 'three';
-import { GLTFLoader } from '/lib/three/GLTFLoader.js';
-import { EXRLoader } from '/lib/three/EXRLoader.js';
-import { OrbitControls } from '/lib/three/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 
 
@@ -30,81 +32,82 @@ controls.update();
 console.log('scene:', scene);
 
 // load gltf
-async function async_load(loader, url) {
-    return new Promise(resolve => {
-        loader.load(url, resolve);
-    });
-}
-const gltf = await async_load(new GLTFLoader(), '/foot/foot.glb');
-console.log('gltf:', gltf);
-scene.add(gltf.scene);
-scene.traverse(obj => {
-    if(obj.material && obj.material.map) {
-        obj.material.map.encoding = THREE.sRGBEncoding;
-    }
-    if(USE_SHADOWS && obj.material instanceof THREE.Material) {
-        obj.receiveShadow = true;
-        if(!obj.userData.noShadow)
-            obj.castShadow = true;
-        console.log(obj, ' receives shadow');
-    }
-    if(obj.userData) {
-        if(USE_SHADOWS && obj instanceof THREE.Light && obj.name.indexOf('shadow') > -1) {
-            console.log(obj, ' casts shadow');
-            obj.castShadow = true;
-            obj.shadow.mapSize.width = obj.shadow.mapSize.height = 1024;
+const gltfLoader = new GLTFLoader();
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/lib/draco/');
+gltfLoader.setDRACOLoader(dracoLoader);
+const ktx2Loader = new KTX2Loader();
+ktx2Loader.setTranscoderPath('/lib/basis/');
+ktx2Loader.detectSupport(renderer);
+gltfLoader.setKTX2Loader(ktx2Loader);
+gltfLoader.load('/foot/foot-instance-uastc-draco.glb', (gltf) => {
+    console.log('gltf:', gltf);
+    scene.add(gltf.scene);
+    scene.traverse(obj => {
+        if(obj.material && obj.material.map) {
+            obj.material.map.encoding = THREE.sRGBEncoding;
         }
-    }
-});
-scene.matrixAutoUpdate = false;
+        if(USE_SHADOWS && obj.material instanceof THREE.Material) {
+            obj.receiveShadow = true;
+            if(!obj.userData.noShadow)
+                obj.castShadow = true;
+            console.log(obj, ' receives shadow');
+        }
+        if(obj.userData) {
+            if(USE_SHADOWS && obj instanceof THREE.Light && obj.name.indexOf('shadow') > -1) {
+                console.log(obj, ' casts shadow');
+                obj.castShadow = true;
+                obj.shadow.mapSize.width = obj.shadow.mapSize.height = 1024;
+            }
+        }
+    });
+    scene.matrixAutoUpdate = false;
 
 
-// load an environment image
-const pmremGenerator = new THREE.PMREMGenerator(renderer);
-pmremGenerator.compileEquirectangularShader();
-new EXRLoader().load('/mnt/tera/graphics/hdr/forest.exr', function (texture) {
-    const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-    //scene.background = envMap;
-    scene.environment = envMap;
-    texture.dispose();
-    pmremGenerator.dispose();
-});
+    // load an environment image
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    new EXRLoader().load('/foot/forest.exr', function (texture) {
+        const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+        //scene.background = envMap;
+        scene.environment = envMap;
+        texture.dispose();
+        pmremGenerator.dispose();
+    });
 
-// play animations
-const animationMixer = new THREE.AnimationMixer(gltf.scene);
-for(let i = 0; i < gltf.animations.length; i++) {
-    console.log('anim:', gltf.animations[0]);
-    let action = animationMixer.clipAction(gltf.animations[i]);
-    action.play();
-}
-
-// set up render loop
-const frame_clock = new THREE.Clock(true);
-const frame_interval = 1 / FRAMERATE;
-let frame_delta = 0;
-const anim_clock = new THREE.Clock(true);
-
-renderer.setAnimationLoop((time) => {
-    frame_delta += frame_clock.getDelta();
-    if(frame_delta < frame_interval) return;
-    frame_delta = frame_delta % frame_interval;
-
-    if(!cameras[camid]) return;
-    const camera = cameras[camid];
-
-    // update size/aspect if necessary
-    const canvas = renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    if(width !== canvas.width || height !== canvas.height) {
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+    // play animations
+    const animationMixer = new THREE.AnimationMixer(gltf.scene);
+    for(let i = 0; i < gltf.animations.length; i++) {
+        console.log('anim:', gltf.animations[0]);
+        let action = animationMixer.clipAction(gltf.animations[i]);
+        action.play();
     }
 
-    animationMixer.update(anim_clock.getDelta());
+    // set up render loop
+    const frame_clock = new THREE.Clock(true);
+    const frame_interval = 1 / FRAMERATE;
+    let frame_delta = 0;
+    const anim_clock = new THREE.Clock(true);
 
-    renderer.render(scene, camera);
+    renderer.setAnimationLoop((time) => {
+        frame_delta += frame_clock.getDelta();
+        if(frame_delta < frame_interval) return;
+        frame_delta = frame_delta % frame_interval;
+
+        // update size/aspect if necessary
+        const canvas = renderer.domElement;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        if(width !== canvas.width || height !== canvas.height) {
+            renderer.setSize(width, height, false);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+
+        animationMixer.update(anim_clock.getDelta());
+
+        renderer.render(scene, camera);
+    });
 });
 
 
