@@ -6,8 +6,11 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "homepage": "https://github.com/brandon-lockaby",
   "scripts": {
-    "debug": "parcel index.html",
-    "build": "rimraf dist && mkdir dist && cp -r static/* dist/ && parcel build index.html",
+    "clean": "rimraf dist && mkdir dist",
+    "copy": "cp -r static/* dist/",
+    "clean-copy": "npm run clean && npm run copy",
+    "debug": "npm run clean-copy && parcel index.html",
+    "build": "npm run clean-copy && parcel build index.html",
     "push": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
   },
   "dependencies": {
